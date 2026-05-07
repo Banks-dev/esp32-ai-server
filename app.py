@@ -2,20 +2,30 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+@app.route("/")
+def home():
+    return "AI Server Running"
+
 @app.route("/ai", methods=["POST"])
 def ai():
 
-    data = request.get_json(force=True)
+    data = request.json
     text = data.get("text", "")
 
-    return jsonify({
-        "reply": f"You said: {text}",
-        "emotion": "happy"
-    })
+    # TEMP AI LOGIC (we will upgrade to Claude later)
+    if "happy" in text:
+        emotion = "happy"
+    elif "sad" in text:
+        emotion = "sad"
+    elif "think" in text:
+        emotion = "thinking"
+    else:
+        emotion = "idle"
 
-@app.route("/")
-def home():
-    return "AI SERVER ONLINE"
+    return jsonify({
+        "reply": "I heard you say: " + text,
+        "emotion": emotion
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
